@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Animasi Kado Ulang Tahun</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      overflow: hidden;
+      background: linear-gradient(to top, #ff7e5f, #feb47b, #f7d794);
+    }
+
+    /* Matahari */
+    .sun {
+      position: absolute;
+      bottom: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, #ffd700, #ff4500);
+      border-radius: 50%;
+      box-shadow: 0 0 60px rgba(255, 200, 0, 0.6);
+      animation: sunset 10s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+    @keyframes sunset {
+      0% { bottom: -50px; }
+      100% { bottom: 120px; }
+    }
+
+    /* Cloud */
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      width: 120px;
+      height: 60px;
+      animation: moveClouds 60s linear infinite;
+      filter: blur(2px);
+    }
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+    }
+    .cloud::before { width: 80px; height: 80px; top: -20px; left: -40px; }
+    .cloud::after { width: 100px; height: 100px; top: -30px; right: -40px; }
+    @keyframes moveClouds {
+      from { left: -200px; }
+      to { left: 120%; }
+    }
+
+    /* Bird */
+    .bird {
+      position: absolute;
+      width: 40px;
+      height: 20px;
+      top: 30%;
+      left: -50px;
+      animation: fly 20s linear infinite;
+    }
+    .bird::before, .bird::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #000;
+      border-color: black transparent transparent transparent;
+      border-radius: 50%;
+    }
+    .bird::before { left: 0; transform: rotate(-20deg); }
+    .bird::after { right: 0; transform: rotate(20deg); }
+    @keyframes fly {
+      0% { transform: translateX(0) translateY(0); }
+      50% { transform: translateX(100vw) translateY(-50px); }
+      100% { transform: translateX(200vw) translateY(0); }
+    }
+
+    /* Gift */
+    .gift-box {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      background: rgb(252, 133, 216);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      animation: bounce 2s infinite;
+      z-index: 10;
+    }
+    .gift-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 90px;
+      width: 20px;
+      height: 200px;
+      background-color: rgb(0, 225, 255);
+    }
+    .gift-box::after {
+      content: "";
+      position: absolute;
+      top: 90px;
+      left: 0;
+      width: 200px;
+      height: 20px;
+      background-color: rgb(0, 225, 255);
+    }
+    .lid {
+      position: absolute;
+      top: -40px;
+      left: -10px;
+      width: 220px;
+      height: 60px;
+      background: rgb(0, 200, 250);
+      border-radius: 12px;
+      transition: transform 1s ease;
+      z-index: 2;
+    }
+    .gift-box.open .lid { transform: translateY(-120px) rotate(-15deg); }
+
+    .message {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: transparent;
+      color: #333;
+      font-size: 18px;
+      text-align: center;
+      padding: 20px;
+      opacity: 0;
+      transition: all 1s ease;
+      z-index: 1;
+    }
+    .gift-box.open .message {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    /* Balloons */
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 60px;
+      height: 80px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: flyUp 8s infinite;
+    }
+    .balloon.left {
+      background-color: aquamarine;
+    }
+    .balloon.right {
+      background-color: #ffd700;
+    }
+    .balloon::after {
+      content: "";
+      position: absolute;
+      top: 80px;
+      left: 28px;
+      width: 4px;
+      height: 50px;
+      background: #1d1e25;
+    }
+    .balloon.left { left: 10%; animation-delay: 0s; }
+    .balloon.right { right: 10%; animation-delay: 4s; }
+    @keyframes flyUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120vh) scale(1.1); opacity: 0; }
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* Floating hearts kecil */
+    .hearts {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .heart {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: rgb(0, 183, 255);
+      transform: rotate(45deg);
+      animation: float 4s linear infinite;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: rgb(0, 140, 255);
+      border-radius: 50%;
+    }
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: -10px; top: 0; }
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-200px) scale(0); opacity: 0; }
+    }
+
+    /*  Love besar SVG */
+    .big-love {
+      position: fixed;
+      color: aqua;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      transition: all 1s ease;
+      z-index: 20;
+    }
+    .big-love.show {
+      transform: translate(-50%, -50%) scale(1);
+      color: aqua;
+      opacity: 1;
+      animation: heartbeat 5s infinite;
+    }
+    @keyframes heartbeat {
+      0%   { transform: translate(-50%, -50%) scale(1); }
+      25%  { transform: translate(-50%, -50%) scale(1.1); }
+      40%  { transform: translate(-50%, -50%) scale(0.95); }
+      60%  { transform: translate(-50%, -50%) scale(1.15); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    .big-love-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(81, 164, 241);
+      text-align: center;
+      line-height: 1.4;
+      width: 160px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sunset -->
+  <div class="sun"></div>
+  <div class="cloud" style="top:20%;left:-100px;"></div>
+  <div class="cloud" style="top:35%;left:-300px;animation-delay:20s;"></div>
+  <div class="bird"></div>
+
+  <!-- Balloons -->
+  <div class="balloon left"></div>
+  <div class="balloon right"></div>
+
+  <!-- Gift -->
+  <div class="gift-box" id="gift">
+    <div class="lid"></div>
+    <div class="hearts" id="hearts"></div>
+  </div>
+
+  <!-- Love besar (SVG Path) -->
+  <div class="big-love" id="bigLove">
+    <svg viewBox="0 0 24 24" width="500" height="500" fill="pink">
+      <path d="M12 21s-6-4.35-10-9.5C-1.5 7.36 2.42 2 
+               7.5 4.09C9.24 4.82 10.5 6.5 12 8.5 
+               C13.5 6.5 14.76 4.82 16.5 4.09
+               C21.58 2 25.5 7.36 22 11.5 
+               C18 16.65 12 21 12 21z"/>
+    </svg>
+    <div class="big-love-text">
+      Do you<br>wanna be<br>my life partner?
+    </div>
+  </div>
+
+  <!-- Musik -->
+  <audio id="bg-music" loop>
+    <source src="wedding-romantic-love-music-409293.mp3" type="audio/mpeg"/>
+  </audio>
+
+  <script>
+    const gift = document.getElementById("gift");
+    const heartsContainer = document.getElementById("hearts");
+    const music = document.getElementById("bg-music");
+    const bigLove = document.getElementById("bigLove");
+    let sudahMain = false;
+
+    gift.addEventListener("click", () => {
+      gift.classList.toggle("open");
+
+      if (gift.classList.contains("open")) {
+        if (!sudahMain) {
+          music.play().catch(err => console.log("Autoplay gagal:", err));
+          sudahMain = true;
+        }
+        for (let i = 0; i < 20; i++) {
+          createHeart();
+        }
+        setTimeout(() => { bigLove.classList.add("show"); }, 1500);
+      } else {
+        bigLove.classList.remove("show");
+      }
+    });
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 200 - 100 + "px";
+      heart.style.top = Math.random() * 20 - 10 + "px";
+      heart.style.background = getRandomColor();
+      heart.style.animationDuration = 2 + Math.random() * 3 + "s";
+      heartsContainer.appendChild(heart);
+      setTimeout(() => { heart.remove(); }, 4000);
+    }
+
+    function getRandomColor() {
+      const colors = ["#ff4d6d", "#ff9a8b", "#ffdde1", "#ff4081"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+  </script>
+</body>
+</html>
