@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Propose Love To, Suci</title>
+  <title>Animasi Kado Ulang Tahun</title>
   <style>
     body {
       margin: 0;
@@ -14,6 +14,16 @@
       font-family: "Comic Sans MS", cursive, sans-serif;
       overflow: hidden;
       background: linear-gradient(to top, #ff7e5f, #feb47b, #f7d794);
+    }
+
+    #pinkboard {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 5;
+      pointer-events: none;
     }
 
     /* Matahari */
@@ -157,12 +167,8 @@
       border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
       animation: flyUp 8s infinite;
     }
-    .balloon.left {
-      background-color: aquamarine;
-    }
-    .balloon.right {
-      background-color: #ffd700;
-    }
+    .balloon.left { background-color: aquamarine; }
+    .balloon.right { background-color: #ffd700; }
     .balloon::after {
       content: "";
       position: absolute;
@@ -183,39 +189,7 @@
       50% { transform: translateY(-15px); }
     }
 
-    /* Floating hearts kecil */
-    .hearts {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-    .heart {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      background: rgb(0, 183, 255);
-      transform: rotate(45deg);
-      animation: float 4s linear infinite;
-    }
-    .heart::before,
-    .heart::after {
-      content: "";
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: rgb(0, 140, 255);
-      border-radius: 50%;
-    }
-    .heart::before { top: -10px; left: 0; }
-    .heart::after { left: -10px; top: 0; }
-    @keyframes float {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-200px) scale(0); opacity: 0; }
-    }
-
-    /*  Love besar SVG */
+    /* Love besar */
     .big-love {
       position: fixed;
       color: aqua;
@@ -266,10 +240,9 @@
   <!-- Gift -->
   <div class="gift-box" id="gift">
     <div class="lid"></div>
-    <div class="hearts" id="hearts"></div>
   </div>
 
-  <!-- Love besar (SVG Path) -->
+  <!-- Love besar -->
   <div class="big-love" id="bigLove">
     <svg viewBox="0 0 24 24" width="500" height="500" fill="pink">
       <path d="M12 21s-6-4.35-10-9.5C-1.5 7.36 2.42 2 
@@ -285,12 +258,14 @@
 
   <!-- Musik -->
   <audio id="bg-music" loop>
-    <source src="wedding-romantic-love-music-409293.mp3" type="audio/mpeg"/>
+    <source src="destiny.mp3" type="audio/mpeg"/>
   </audio>
+
+  <!-- Canvas untuk animasi hati -->
+  <canvas id="pinkboard"></canvas>
 
   <script>
     const gift = document.getElementById("gift");
-    const heartsContainer = document.getElementById("hearts");
     const music = document.getElementById("bg-music");
     const bigLove = document.getElementById("bigLove");
     let sudahMain = false;
@@ -303,31 +278,76 @@
           music.play().catch(err => console.log("Autoplay gagal:", err));
           sudahMain = true;
         }
-        for (let i = 0; i < 20; i++) {
-          createHeart();
-        }
         setTimeout(() => { bigLove.classList.add("show"); }, 1500);
       } else {
         bigLove.classList.remove("show");
       }
     });
 
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.style.left = Math.random() * 200 - 100 + "px";
-      heart.style.top = Math.random() * 20 - 10 + "px";
-      heart.style.background = getRandomColor();
-      heart.style.animationDuration = 2 + Math.random() * 3 + "s";
-      heartsContainer.appendChild(heart);
-      setTimeout(() => { heart.remove(); }, 4000);
+    /* ===================== Pink Heart Canvas ===================== */
+    var setting = {
+      particle: {
+        length: 500,
+        duration: 2,
+        velocity: 100,
+        effect: -0.75,
+        size: 30
+      }
+    };
+
+    const canvas = document.getElementById("pinkboard");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function HeartParticle(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * setting.particle.size;
+      this.life = setting.particle.duration * 60;
+      this.vx = (Math.random() - 0.5) * setting.particle.velocity / 50;
+      this.vy = (Math.random() - 1) * setting.particle.velocity / 50;
     }
 
-    function getRandomColor() {
-      const colors = ["#ff4d6d", "#ff9a8b", "#ffdde1", "#ff4081"];
-      return colors[Math.floor(Math.random() * colors.length)];
+    HeartParticle.prototype.draw = function () {
+      ctx.fillStyle = "rgba(255,105,180," + this.life / (setting.particle.duration * 60) + ")";
+      ctx.beginPath();
+      let s = this.size;
+      ctx.moveTo(this.x, this.y);
+      ctx.bezierCurveTo(this.x - s / 2, this.y - s / 2,
+                        this.x - s, this.y + s / 3,
+                        this.x, this.y + s);
+      ctx.bezierCurveTo(this.x + s, this.y + s / 3,
+                        this.x + s / 2, this.y - s / 2,
+                        this.x, this.y);
+      ctx.fill();
+    };
+
+    HeartParticle.prototype.update = function () {
+      this.x += this.vx;
+      this.y += this.vy * setting.particle.effect;
+      this.life--;
+    };
+
+    let particles = [];
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+        if (p.life <= 0) particles.splice(i, 1);
+      });
+      requestAnimationFrame(animate);
     }
+
+    document.addEventListener("click", e => {
+      for (let i = 0; i < 20; i++) {
+        particles.push(new HeartParticle(e.clientX, e.clientY));
+      }
+    });
+
+    animate();
   </script>
 </body>
 </html>
-
